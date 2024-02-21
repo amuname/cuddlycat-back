@@ -7,7 +7,7 @@ const SALT_ROUNDS = 5;
 @Injectable()
 export class HashService {
   hashGenerate(data: string) {
-    // console.log('@Payload: ', data);
+    console.log('@Payload: ', data);
     return bcrypt.hash(data, SALT_ROUNDS);
   }
 

@@ -9,6 +9,8 @@ import { HashService } from './hash_service/hash_service.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { SsoRedirectService } from './sso-redirect/sso-redirect.service';
 import { SsoRedirectController } from './sso-redirect/sso-redirect.controller';
+import { RolesGuard } from './roles.guard';
+import { JwtStrategy } from './jwt.strategy';
 
 // import {  } from './hash_service/hash_service.service';
 
@@ -25,9 +27,11 @@ import { SsoRedirectController } from './sso-redirect/sso-redirect.controller';
   providers: [
     ManualLoginService,
     LocalStrategy,
+    JwtStrategy,
     HashService,
     PrismaService,
     SsoRedirectService,
+    RolesGuard,
   ],
   exports: [ManualLoginService],
 })

@@ -23,6 +23,7 @@ export class ManualLoginController {
   // @HttpStatus(HttpStatus.CREATED)
   @Post('sign-in')
   signIn(@Body() data: SignInData) {
+    console.log('@Body', data);
     return this.manualLoginService.signIn(data);
   }
 
@@ -37,9 +38,10 @@ export class ManualLoginController {
     // return req.user;
     // return this.manualLoginService.login(req.user);
     const jwt_payload = await this.manualLoginService.login(req.user);
-    console.log('\nreq.hostname\n', req.hostname, '\n');
+    console.log('\nx-forwarded-host\n', req.headers['x-forwarded-host'], '\n');
+    // console.log('\nreq.hostname\n', req.hostname, '\n');
     return this.ssoRedirectService.createUUIDPath(
-      req.hostname,
+      req.headers['x-forwarded-host'] as string,
       req.user,
       jwt_payload.access_token,
     );

@@ -5,16 +5,90 @@ generator client {
   provider = "prisma-client-js"
 }
 
+generator dbml {
+  provider = "prisma-dbml-generator"
+  output   = "./dmbl"
+}
+
+// generator typegraphql {
+//   provider = "typegraphql-prisma"
+// }
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id         String   @id @default(uuid())
-  name       String?
-  phone      String?
-  email      String
-  hash       String
-  created_at DateTime @default(now())
+  id           String   @id @default(uuid())
+  is_admin     Boolean  @default(false)
+  verify_code  String   @default(uuid())
+  is_verified  Boolean  @default(false)
+  name         String?
+  phone        String?
+  email        String   @unique
+  hash         String
+  refresh_toket String?
+  created_at   DateTime @default(now())
+  referal_code String   @unique @default(uuid())
+  referer_id   String?
+  referer      User?    @relation("UserReferals", fields: [referer_id], references: [id])
+  referals     User[]   @relation("UserReferals")
+  orders       Order[]
+  bonus_programm BonusProgramm?
+}
+
+enum ProviderCompanyType {
+  Product
+  Bonus
+}
+
+model ProviderCompany {
+  id       String              @id @default(uuid())
+  name     String
+  type     ProviderCompanyType
+  products ProviderProduct[]
+}
+
+model ProviderProduct {
+  id                                      String                           @id @default(uuid())
+  name                                    String
+  type                                    ProviderCompanyType
+  description                             String
+  price                                   Float
+  provider_company_id                     String
+  provider_company                        ProviderCompany                  @relation(fields: [provider_company_id], references: [id])
+  provider_product_input_fields_config_id Int                              @unique
+  provider_product_input_fields_config    ProviderProductInputFieldsConfig @relation(fields: [provider_product_input_fields_config_id], references: [id])
+  Order                                   Order?                           @relation(fields: [orderId], references: [id])
+  orderId                                 Int?
+}
+
+model ProviderProductInputFieldsConfig {
+  id               Int              @id @default(autoincrement())
+  quantity         Int?
+  provider_product ProviderProduct?
+  provider_product_input_fields_config_questions_id Int @unique
+  provider_product_input_fields_config_questions ProviderProductInputFieldsConfigQuestions @relation(fields: [provider_product_input_fields_config_questions_id], references: [id])
+}
+
+model ProviderProductInputFieldsConfigQuestions {
+  id               Int              @id @default(autoincrement())
+  question         String
+  provider_product_input_fields_config ProviderProductInputFieldsConfig?
+}
+
+model Order {
+  id          Int               @id @default(autoincrement())
+  products    ProviderProduct[]
+  users_input Json // данные { product_id: { field_0: 'asd', field_1: 123, field_3: []}}
+  User        User             @relation(fields: [user_id], references: [id])
+  user_id     String
+}
+
+model BonusProgramm {
+  id Int @id @default(autoincrement())
+  User        User             @relation(fields: [user_id], references: [id])
+  quantity    Int
+  user_id     String @unique
 }

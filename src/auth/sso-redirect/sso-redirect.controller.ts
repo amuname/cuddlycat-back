@@ -11,6 +11,9 @@ export class SsoRedirectController {
     @Req() req: Request,
     @Param('user_uuid', new ParseUUIDPipe()) user_uuid: string,
   ) {
-    return this.ssoRedirectService.authUserJWT(user_uuid, req.hostname);
+    return this.ssoRedirectService.authUserJWT(
+      user_uuid,
+      req.headers['x-forwarded-host'] as string,
+    );
   }
 }

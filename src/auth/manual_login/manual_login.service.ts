@@ -44,9 +44,10 @@ export class ManualLoginService {
   }
 
   async login(user: UserNoHash) {
-    const payload = { username: user.name, sub: user.id };
+    console.log('user log in', user);
+    // const payload = { username: user.name, sub: user.id };
     return {
-      access_token: await this.jwtService.signAsync(payload),
+      access_token: await this.jwtService.signAsync(user),
     };
   }
 }

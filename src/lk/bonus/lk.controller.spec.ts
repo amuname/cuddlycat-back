@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { LkController } from './lk.controller';
+import { LkBonuceController as LkController } from './lk-bonus.controller';
 
 describe('LkController', () => {
   let controller: LkController;

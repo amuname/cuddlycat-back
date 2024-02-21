@@ -8,23 +8,27 @@ import { PrismaService } from './prisma/prisma.service';
 // import { SsoRedirectService } from './auth/sso-redirect/sso-redirect.service';
 // import { SsoRedirectController } from './auth/sso-redirect/sso-redirect.controller';
 import { AuthModule } from './auth/auth.module';
-import { LkController } from './lk/lk.controller';
-import { LkService } from './lk/lk.service';
+// import { LkController } from './lk/lk.controller';
+// import { LkService } from './lk/lk.service';
+// import { ApiProxyController } from './api-proxy/api-proxy.controller';
+import { AdminModule } from './admin/admin.module';
+import { LkModule } from './lk/lk.module';
 console.log('\n APP MODULE AuthModule\n', AuthModule, '\n');
 @Module({
-  imports: [AuthModule],
+  imports: [AuthModule, AdminModule, LkModule],
   controllers: [
     AppController,
-    LkController,
+    // LkController,
+    // ApiProxyController,
     // ManualLoginController,
     // SsoRedirectController,
   ],
   providers: [
+    PrismaService,
     AppService,
     // ManualLoginService,
     // HashService,
     PrismaService,
-    LkService,
     // SsoRedirectService,
   ],
 })

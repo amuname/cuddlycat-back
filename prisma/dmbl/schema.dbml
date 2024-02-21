@@ -1,0 +1,90 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table User {
+  id String [pk]
+  is_admin Boolean [not null, default: false]
+  verify_code String [not null]
+  is_verified Boolean [not null, default: false]
+  name String
+  phone String
+  email String [unique, not null]
+  hash String [not null]
+  created_at DateTime [default: `now()`, not null]
+  referal_code String [unique, not null]
+  referer_id String
+  referer User
+  referals User [not null]
+  orders Order [not null]
+  bonus_programm BonusProgramm
+}
+
+Table ProviderCompany {
+  id String [pk]
+  name String [not null]
+  type ProviderCompanyType [not null]
+  products ProviderProduct [not null]
+}
+
+Table ProviderProduct {
+  id String [pk]
+  name String [not null]
+  type ProviderCompanyType [not null]
+  description String [not null]
+  price Float [not null]
+  provider_company_id String [not null]
+  provider_company ProviderCompany [not null]
+  provider_product_input_fields_config_id Int [unique, not null]
+  provider_product_input_fields_config ProviderProductInputFieldsConfig [not null]
+  Order Order
+  orderId Int
+}
+
+Table ProviderProductInputFieldsConfig {
+  id Int [pk, increment]
+  quantity Int
+  provider_product ProviderProduct
+  provider_product_input_fields_config_questions_id Int [unique, not null]
+  provider_product_input_fields_config_questions ProviderProductInputFieldsConfigQuestions [not null]
+}
+
+Table ProviderProductInputFieldsConfigQuestions {
+  id Int [pk, increment]
+  question String [not null]
+  provider_product_input_fields_config ProviderProductInputFieldsConfig
+}
+
+Table Order {
+  id Int [pk, increment]
+  products ProviderProduct [not null]
+  users_input Json [not null]
+  User User [not null]
+  user_id String [not null]
+}
+
+Table BonusProgramm {
+  id Int [pk, increment]
+  User User [not null]
+  quantity Int [not null]
+  user_id String [unique, not null]
+}
+
+Enum ProviderCompanyType {
+  Bonus
+  Product
+}
+
+Ref: User.referer_id - User.id
+
+Ref: ProviderProduct.provider_company_id > ProviderCompany.id
+
+Ref: ProviderProduct.provider_product_input_fields_config_id - ProviderProductInputFieldsConfig.id
+
+Ref: ProviderProduct.orderId > Order.id
+
+Ref: ProviderProductInputFieldsConfig.provider_product_input_fields_config_questions_id - ProviderProductInputFieldsConfigQuestions.id
+
+Ref: Order.user_id > User.id
+
+Ref: BonusProgramm.user_id - User.id
